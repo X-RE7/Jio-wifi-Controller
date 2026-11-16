@@ -19,9 +19,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
@@ -29,11 +26,17 @@ jobs:
 
     - name: Build Debug APK
       run: |
-        # Auto-detect if files are in a subfolder
+        # Auto-detect if files are inside a subfolder
         if [ ! -f "settings.gradle.kts" ] && [ -d "jio_wifi_android" ]; then
           cd jio_wifi_android
         fi
-        gradle assembleDebug --stacktrace
+
+        if [ -f "./gradlew" ]; then
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --stacktrace
+        else
+          gradle assembleDebug --stacktrace
+        fi
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
