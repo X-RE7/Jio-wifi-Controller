@@ -19,14 +19,24 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.5'
 
     - name: Build Debug APK
-      run: gradle assembleDebug
+      run: |
+        # Auto-detect if files are in a subfolder
+        if [ ! -f "settings.gradle.kts" ] && [ -d "jio_wifi_android" ]; then
+          cd jio_wifi_android
+        fi
+        gradle assembleDebug --stacktrace
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: JioWifiController-APK
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: "**/app/build/outputs/apk/debug/*.apk"
