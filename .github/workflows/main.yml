@@ -26,7 +26,12 @@ jobs:
 
     - name: Build Debug APK
       run: |
-        # Auto-detect if files are inside a subfolder
+        # Unzip project files
+        if [ -f "jio_wifi_android.zip" ]; then
+          unzip -o jio_wifi_android.zip
+        fi
+
+        # Handle subfolder if present
         if [ ! -f "settings.gradle.kts" ] && [ -d "jio_wifi_android" ]; then
           cd jio_wifi_android
         fi
